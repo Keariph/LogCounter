@@ -20,8 +20,6 @@ For finding the start and end of the range of IP addresses, LogCounter calculate
 ### Used technologies:
 - Visual Studio 2022
 - .Net 8.0
-- Asp.net core MVC
-- EntityFramework
 - Spectre.Console library
 
 
