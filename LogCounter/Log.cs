@@ -7,15 +7,30 @@ using System.Threading.Tasks;
 
 namespace LogCounter
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Log
     {
-        public Log(IPAddress iP, DateTime dateTime)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="dateTime"></param>
+        public Log(IPAddress ip, DateTime dateTime)
         {
-            IP = iP;
+            IP = ip;
             Date = dateTime;
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
         public IPAddress IP { get;}
+
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime Date { get;}
     }
 }

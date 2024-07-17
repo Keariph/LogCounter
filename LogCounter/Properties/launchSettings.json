@@ -2,7 +2,7 @@
   "profiles": {
     "LogCounter": {
       "commandName": "Project",
-      "commandLineArgs": "--file-log=D:\\Программирование\\LogCounter\\log.txt --file-output=D:\\Программирование\\LogCounter\\result.txt"
+      "commandLineArgs": "--file-log=D:\\Программирование\\LogCounter\\log.txt --file-output=D:\\Программирование\\LogCounter\\result.txt --time-start=2024-04-14"
     }
   }
 }

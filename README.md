@@ -6,8 +6,8 @@ Name | Description
 --- | ---
 --file-log | Path to the the log file
 --file-output | Path to the output file
---time-start | Start of the time range in `dd.mm.yyyy` format
---time-end | End of the time range in `dd.mm.yyyy` format
+--time-start [otional] | Start of the time range in `dd.mm.yyyy` format
+--time-end [optional] | End of the time range in `dd.mm.yyyy` format
 --address-start [optional] | Ip address of the Start of the range of IP addresses 
 --address-mask [optional] | Address mask in decimal `[0-32]` for finding the end of the range of IP addresses
 
@@ -30,5 +30,5 @@ For finding the start and end of the range of IP addresses, LogCounter calculate
 2) Go to the `C:\{path}\LogCounter` directory and open console
 3) Write a comand line like
 ```
-dotnet run --file-log={path} --file-outpt={path} --time-start={dd.mm.yyyy} --time-end={dd.mm.yyyy} --address-start={ip address} [optional] --address-mask={decimal mask} [optional]
+dotnet run --file-log={path} --file-outpt={path} --time-start={dd.mm.yyyy} [optional] --time-end={dd.mm.yyyy} [optional] --address-start={ip address} [optional] --address-mask={decimal mask} [optional]
 ```
