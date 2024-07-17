@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LogCounter": {
+      "commandName": "Project",
+      "commandLineArgs": "--file-log=D:\\Программирование\\LogCounter\\log.txt --file-output=D:\\Программирование\\LogCounter\\result.txt"
+    }
+  }
+}
