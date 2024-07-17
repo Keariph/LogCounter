@@ -18,58 +18,88 @@ namespace LogCounter
         public Counter(CommandReader.Settings settings) 
         {
             _settings = settings;
-            _subnetMask = ParseMask((int)_settings.SubnetMaskDecimal);
+            //_subnetMask = ParseMask((int)_settings.SubnetMaskDecimal);
         }
 
         public List<Log> ReadLogs()
         {
             List<Log> logs = new List<Log>();
-            //try
-            //{
-                if (File.Exists(_settings.Path))
-                {
-                    List<string> lines = File.ReadLines(_settings.Path).ToList();
-
-                    foreach (string line in lines)
-                    {
-                        if (!string.IsNullOrEmpty(line))
-                        {
-                            int firstCommaIndex = line.IndexOf(':');
-                            IPAddress firstPart = null;
-                            IPAddress.TryParse(line.Substring(0, firstCommaIndex), out firstPart); //255.255.255.0
-                            DateTime secondPart = DateTime.Parse(line.Substring(firstCommaIndex + 1)); //yyyy-MM-dd HH:mm:ss
-                            logs.Add(new Log(firstPart, secondPart));
-                        }
-                    }
-
-                    return logs;
-                }
-            /*}
-            catch (Exception ex)
+            if (File.Exists(_settings.Path))
             {
-                Console.WriteLine(ex.Message);
-            }*/
-            return null;
+                List<string> lines = File.ReadLines(_settings.Path).ToList();
+
+                foreach (string line in lines)
+                {
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        int firstCommandIndex = line.IndexOf(':');
+                        IPAddress firstPart = null;
+                        IPAddress.TryParse(line.Substring(0, firstCommandIndex), out firstPart); //255.255.255.0
+                        DateTime secondPart = DateTime.Parse(line.Substring(firstCommandIndex + 1)); //yyyy-MM-dd HH:mm:ss
+                        logs.Add(new Log(firstPart, secondPart));
+                    }
+                }
+
+                return logs;
+            }
+            else
+            {
+                Console.Error.WriteLine("Файла не существует или указан неверный путь.");
+                return null;
+            }
         }
 
         public void GetLogs()
         {
             List<Log> logs = ReadLogs();
             List<Log> result = new List<Log>();
-            IPAddress endIpAddr = CalculateBroadcastAddress( _settings.IpAddress, _subnetMask);
-
-            if (logs.Count > 0)
+            if (_settings.IpAddress != null)
             {
+                if (_subnetMask != null)
+                {
+                    IPAddress endIpAddr = CalculateBroadcastAddress(_settings.IpAddress, _subnetMask);
+
+                    if (logs.Count > 0)
+                    {
+                        if (_settings.DateStart != null && _settings.DateEnd != null)
+                        {
+                            foreach (Log log in logs)
+                            {
+
+                                if (CompareIP(_settings.IpAddress, endIpAddr, log.IP) && CompareDate((DateTime)_settings.DateStart, (DateTime)_settings.DateEnd, log.Date))
+                                {
+                                    result.Add(log);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (Log log in logs)
+                            {
+
+                                if (CompareIP(_settings.IpAddress, endIpAddr, log.IP))
+                                {
+                                    result.Add(log);
+                                }
+                            }
+                        }
+                    }
+                }
                 foreach (Log log in logs)
                 {
-                    if (CompareIP(_settings.IpAddress, endIpAddr, log.IP) && CompareDate((DateTime)_settings.DateStart, (DateTime)_settings.DateEnd, log.Date))
+
+                    if (CompareIP(_settings.IpAddress, log.IP))
                     {
                         result.Add(log);
                     }
                 }
-            }
 
-            WriteLogs(result, _settings.Output);
+                WriteLogs(result, _settings.Output);
+            }
+            else
+            {
+                Console.Error.WriteLine("Отсутствует IP-address начала диапазона");
+            }
         }
 
         private bool CompareDate(DateTime dateStart, DateTime dateEnd, DateTime date)
@@ -143,6 +173,13 @@ namespace LogCounter
             long ipEnd = BitConverter.ToInt32(endIpAddr.GetAddressBytes().Reverse().ToArray(), 0);
             long ip = BitConverter.ToInt32(address.GetAddressBytes().Reverse().ToArray(), 0);
             return ip >= ipStart && ip <= ipEnd;
+        }
+
+        private bool CompareIP(IPAddress startIpAddr, IPAddress address)
+        {
+            long ipStart = BitConverter.ToInt32(startIpAddr.GetAddressBytes().Reverse().ToArray(), 0);
+            long ip = BitConverter.ToInt32(address.GetAddressBytes().Reverse().ToArray(), 0);
+            return ip >= ipStart;
         }
 
         public void WriteLogs(List<Log> logs, string path)
